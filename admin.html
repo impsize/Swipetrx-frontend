@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SwipeTRX — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f1a;--bg2:#131626;--bg3:#1a1d30;--glass:rgba(255,255,255,0.05);--glass-b:rgba(255,255,255,0.09);--acc1:#6c5ce7;--acc2:#00cec9;--acc3:#fd79a8;--gold:#f9ca24;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--ok:#00b894;--err:#e17055;--warn:#fdcb6e;--r:12px;--t:.22s ease}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:inherit;text-decoration:none}button{cursor:pointer;border:none;font-family:inherit}input,select{font-family:inherit;outline:none}
+.app{display:flex;min-height:100vh}
+.sb{width:220px;background:var(--bg2);border-right:1px solid var(--glass-b);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200}
+.sb-logo{padding:18px 16px;border-bottom:1px solid var(--glass-b);display:flex;align-items:center;gap:9px}
+.sb-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--acc1),var(--acc2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.sb-title{font-weight:800;font-size:.9rem;background:linear-gradient(135deg,var(--acc1),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sb-nav{padding:12px 8px;flex:1;overflow-y:auto}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;color:var(--text2);font-size:.84rem;font-weight:500;cursor:pointer;margin-bottom:2px;border:1px solid transparent;transition:all var(--t)}
+.ni:hover{background:var(--glass);color:var(--text)}
+.ni.active{background:linear-gradient(135deg,rgba(108,92,231,.18),rgba(0,206,201,.1));color:var(--acc2);border-color:rgba(108,92,231,.2)}
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--glass-b);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.pb{padding:24px}
+.card{background:var(--bg2);border:1px solid var(--glass-b);border-radius:var(--r);padding:20px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.sc{position:relative;overflow:hidden;padding:18px}
+.sc::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.08}
+.s1::after{background:var(--acc1)}.s2::after{background:var(--acc2)}.s3::after{background:var(--ok)}.s4::after{background:var(--warn)}.s5::after{background:var(--err)}.s6::after{background:var(--gold)}
+.slbl{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:5px}
+.sval{font-size:1.6rem;font-weight:800;color:var(--text)}
+.ssub{font-size:.72rem;color:var(--text3);margin-top:3px}
+.sec-title{font-size:.9rem;font-weight:700;margin-bottom:14px}
+.pg-title{font-size:1.35rem;font-weight:800;margin-bottom:3px}
+.pg-sub{color:var(--text3);font-size:.83rem;margin-bottom:20px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-weight:600;font-size:.82rem;transition:all var(--t);white-space:nowrap}
+.bp{background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff}.bp:hover{opacity:.88}
+.bok{background:var(--ok);color:#fff}.bok:hover{opacity:.88}
+.berr{background:var(--err);color:#fff}.berr:hover{opacity:.88}
+.bwarn{background:var(--warn);color:#111}.bwarn:hover{opacity:.88}
+.bg_{background:var(--glass);border:1px solid var(--glass-b);color:var(--text2)}.bg_:hover{color:var(--text);background:var(--glass-b)}
+.bsm{padding:5px 11px;font-size:.76rem}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--glass-b);border-radius:8px;padding:9px 13px;color:var(--text);font-size:.85rem}
+.fi:focus{border-color:var(--acc1)}
+.fl{display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:4px}
+.fg{margin-bottom:12px}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);padding:9px 12px;border-bottom:1px solid var(--glass-b)}
+td{padding:10px 12px;font-size:.83rem;border-bottom:1px solid rgba(255,255,255,.028);color:var(--text2)}
+tr:hover td{background:var(--glass)}
+.badge{display:inline-flex;padding:3px 9px;border-radius:20px;font-size:.68rem;font-weight:600}
+.bok2{background:rgba(0,184,148,.15);color:#00b894}.berr2{background:rgba(225,112,85,.15);color:#e17055}.bwarn2{background:rgba(253,203,110,.15);color:#fdcb6e}.binfo{background:rgba(108,92,231,.15);color:#a29bfe}
+.vbadge{display:inline-flex;padding:2px 8px;border-radius:20px;font-size:.67rem;font-weight:700}
+.v1{background:rgba(100,116,139,.2);color:#94a3b8}.v2{background:rgba(0,184,148,.15);color:#00b894}.v3{background:rgba(0,206,201,.15);color:#00cec9}.v4{background:rgba(108,92,231,.15);color:#a29bfe}.v5{background:rgba(253,121,168,.15);color:#fd79a8}.v6{background:rgba(253,203,110,.15);color:#fdcb6e}.v7{background:linear-gradient(135deg,rgba(249,202,36,.2),rgba(253,121,168,.2));color:#f9ca24;border:1px solid rgba(249,202,36,.3)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--glass-b);border-radius:16px;padding:28px;width:100%;max-width:440px}
+#toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{background:var(--bg2);border:1px solid var(--glass-b);border-radius:10px;padding:11px 16px;font-size:.84rem;display:flex;align-items:center;gap:9px;min-width:250px;animation:tin .3s ease;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.toast.ok{border-left:3px solid var(--ok)}.toast.error{border-left:3px solid var(--err)}.toast.warn{border-left:3px solid var(--warn)}.toast.info{border-left:3px solid var(--acc1)}
+@keyframes tin{from{transform:translateX(50px);opacity:0}to{transform:none;opacity:1}}
+.spin{width:30px;height:30px;border:3px solid var(--glass-b);border-top-color:var(--acc1);border-radius:50%;animation:rot .7s linear infinite;margin:40px auto}
+@keyframes rot{to{transform:rotate(360deg)}}
+.center-load{display:flex;align-items:center;justify-content:center;padding:40px}
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.auth-card{background:var(--bg2);border:1px solid var(--glass-b);border-radius:18px;padding:36px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}.mt12{margin-top:12px}.mt16{margin-top:16px}.gap10{gap:10px}
+.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}.flex-wrap{flex-wrap:wrap}
+.text-ok{color:var(--ok)}.text-err{color:var(--err)}.text-acc{color:var(--acc2)}.text-muted{color:var(--text3)}.fw7{font-weight:700}.fw8{font-weight:800}
+@media(max-width:800px){.sb{display:none}.main{margin-left:0}.g4{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="root"><div class="auth-wrap"><div class="spin"></div></div></div>
+<div id="toasts"></div>
+<div class="modal-bg" id="modal"><div class="modal" id="modal-body"></div></div>
+
+<script>
+const API = 'https://YOUR-BACKEND.onrender.com/api'; // ← CHANGE THIS
+let TOKEN = localStorage.getItem('strx_admin_tok');
+let ME    = JSON.parse(localStorage.getItem('strx_admin_me') || 'null');
+
+async function api(method, action, body=null) {
+    const h = {'Content-Type':'application/json','Authorization':`Bearer ${TOKEN}`};
+    try {
+        const r = await fetch(`${API}/admin.php?action=${action}`, {method,headers:h,body:body?JSON.stringify(body):null});
+        const j = await r.json();
+        if (r.status===401||r.status===403){logout();return null;}
+        return j;
+    } catch(e){toast('Network error','error');return null;}
+}
+async function authApi(method, file, action, body=null) {
+    const h = {'Content-Type':'application/json'};
+    if(TOKEN) h['Authorization']=`Bearer ${TOKEN}`;
+    try {
+        const r = await fetch(`${API}/${file}.php?action=${action}`, {method,headers:h,body:body?JSON.stringify(body):null});
+        return await r.json();
+    } catch(e){toast('Network error','error');return null;}
+}
+
+function toast(msg,type='info',ms=3500){
+    const ico={ok:'✅',error:'❌',info:'ℹ️',warn:'⚠️'};
+    const el=document.createElement('div');
+    el.className=`toast ${type}`;
+    el.innerHTML=`<span>${ico[type]||'ℹ️'}</span><span>${msg}</span>`;
+    document.getElementById('toasts').appendChild(el);
+    setTimeout(()=>el.remove(),ms);
+}
+
+function logout(){TOKEN=null;ME=null;localStorage.removeItem('strx_admin_tok');localStorage.removeItem('strx_admin_me');showLogin();}
+function showModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('modal').classList.add('show');}
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal();});
+
+// ── LOGIN ─────────────────────────────────────────────────────
+function showLogin(){
+    document.getElementById('root').innerHTML=`
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div style="text-align:center;margin-bottom:22px">
+          <div style="font-size:2rem">🛡️</div>
+          <div style="font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#6c5ce7,#00cec9);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Admin Panel</div>
+          <div style="color:var(--text3);font-size:.8rem;margin-top:3px">SwipeTRX Rewards</div>
+        </div>
+        <div class="fg"><label class="fl">Email</label><input class="fi" id="le" type="email" placeholder="admin@example.com"></div>
+        <div class="fg"><label class="fl">Password</label><input class="fi" id="lp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="btn bp" style="width:100%" onclick="doLogin()">Sign In as Admin →</button>
+      </div>
+    </div>`;
+}
+async function doLogin(){
+    const e=document.getElementById('le')?.value.trim();
+    const p=document.getElementById('lp')?.value;
+    if(!e||!p){toast('Enter credentials','warn');return;}
+    const r=await authApi('POST','auth','login',{email:e,password:p});
+    if(!r?.success){toast(r?.message||'Login failed','error');return;}
+    TOKEN=r.data.token; ME=r.data.user;
+    localStorage.setItem('strx_admin_tok',TOKEN);
+    localStorage.setItem('strx_admin_me',JSON.stringify(ME));
+    buildApp();
+}
+
+// ── SHELL ─────────────────────────────────────────────────────
+function ni(p,ico,label){return`<div class="ni" data-p="${p}" onclick="go('${p}')">${'<span>'+ico+'</span><span>'+label+'</span>'}</div>`;}
+function buildApp(){
+    document.getElementById('root').innerHTML=`
+    <div class="app">
+      <aside class="sb">
+        <div class="sb-logo"><div class="sb-icon">⚡</div><div><div class="sb-title">SwipeTRX</div><div style="font-size:.6rem;color:var(--text3)">Admin Panel</div></div></div>
+        <nav class="sb-nav">
+          ${ni('dashboard','📊','Dashboard')}
+          ${ni('withdrawals','💸','Withdrawals')}
+          ${ni('deposits','💎','Deposits')}
+          ${ni('users','👥','Users')}
+          ${ni('videos','▶️','Videos')}
+          ${ni('refcodes','🔑','Ref Codes')}
+        </nav>
+        <div style="padding:12px;border-top:1px solid var(--glass-b)">
+          <div style="font-size:.76rem;color:var(--text3);padding:8px 10px">Logged in as<br><span style="color:var(--acc2);font-weight:700">${ME?.username||'Admin'}</span></div>
+          <button class="btn bg_ bsm" onclick="logout()" style="width:100%;margin-top:4px">🚪 Logout</button>
+        </div>
+      </aside>
+      <div class="main">
+        <header class="topbar">
+          <span id="pg-heading" style="font-weight:700">Dashboard</span>
+          <span style="font-size:.78rem;color:var(--text3)">🛡️ Admin Access</span>
+        </header>
+        <div class="pb" id="page"></div>
+      </div>
+    </div>`;
+    go('dashboard');
+}
+
+function go(p){
+    document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('active',n.dataset.p===p));
+    const titles={dashboard:'Dashboard',withdrawals:'Withdrawals',deposits:'Deposits',users:'Users',videos:'Videos',refcodes:'Referral Codes'};
+    document.getElementById('pg-heading').textContent=titles[p]||p;
+    document.getElementById('page').innerHTML='<div class="center-load"><div class="spin"></div></div>';
+    ({dashboard,withdrawals,deposits,users,videos,refcodes})[p]?.();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+async function dashboard(){
+    const r=await api('GET','stats');
+    if(!r?.success)return;
+    const d=r.data;
+    document.getElementById('page').innerHTML=`
+    <div class="pg-title">Admin Dashboard</div>
+    <div class="pg-sub">Platform overview</div>
+    <div class="g4 mb16">
+      ${sc('s1','👥','Total Users',d.total_users,'Active: '+d.active_users)}
+      ${sc('s3','💎','Total Deposited','€'+parseFloat(d.total_deposits).toFixed(2),'All time')}
+      ${sc('s5','💸','Pending Withdrawals',d.pending_withdrawals,'€'+parseFloat(d.pending_withdraw_eur).toFixed(2)+' total')}
+      ${sc('s6','▶️','Videos Watched',d.total_videos_watched,'€'+parseFloat(d.total_earned_eur).toFixed(2)+' earned')}
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="sec-title">⚡ Quick Actions</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <button class="btn bp" onclick="go('withdrawals')">💸 Review Pending Withdrawals (${d.pending_withdrawals})</button>
+          <button class="btn bok" onclick="go('deposits')">💎 Review Pending Deposits</button>
+          <button class="btn bg_" onclick="go('users')">👥 Manage Users</button>
+          <button class="btn bg_" onclick="go('videos')">▶️ Manage Videos</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title">📊 Today</div>
+        <div style="font-size:.85rem;display:flex;flex-direction:column;gap:10px">
+          <div class="flex justify-between"><span class="text-muted">New users</span><span class="fw7 text-acc">${d.new_users_today}</span></div>
+          <div class="flex justify-between"><span class="text-muted">Pending withdrawals</span><span class="fw7 text-err">${d.pending_withdrawals}</span></div>
+          <div class="flex justify-between"><span class="text-muted">Total users</span><span class="fw7">${d.total_users}</span></div>
+          <div class="flex justify-between"><span class="text-muted">Total deposited</span><span class="fw7 text-ok">€${parseFloat(d.total_deposits).toFixed(2)}</span></div>
+        </div>
+      </div>
+    </div>`;
+}
+function sc(cls,ico,lbl,val,sub){return`<div class="card sc ${cls}"><div style="font-size:1.3rem;margin-bottom:6px">${ico}</div><div class="slbl">${lbl}</div><div class="sval">${val}</div><div class="ssub">${sub}</div></div>`;}
+
+// ── WITHDRAWALS ───────────────────────────────────────────────
+async function withdrawals(){
+    const r=await api('GET','withdrawals');
+    if(!r?.success)return;
+    const rows=r.data.map(w=>`<tr>
+      <td>#${w.id}</td>
+      <td>${w.username}<br><span class="text-muted" style="font-size:.72rem">${w.email}</span></td>
+      <td class="fw7">€${parseFloat(w.amount_eur).toFixed(2)}</td>
+      <td class="text-ok">€${parseFloat(w.net_eur).toFixed(2)}</td>
+      <td style="font-family:monospace;font-size:.75rem">${w.iban}</td>
+      <td>${w.account_name||'—'}</td>
+      <td>${new Date(w.created_at).toLocaleDateString()}</td>
+      <td>
+        <button class="btn bok bsm" onclick="approveW(${w.id},'${w.username}',${w.net_eur})">✅ Approve</button>
+        <button class="btn berr bsm" style="margin-left:5px" onclick="rejectW(${w.id})">❌ Reject</button>
+      </td></tr>`).join('');
+    document.getElementById('page').innerHTML=`
+    <div class="pg-title">Withdrawals</div>
+    <div class="pg-sub">Review and approve pending withdrawal requests</div>
+    <div class="card">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>ID</th><th>User</th><th>Amount</th><th>Net</th><th>IBAN</th><th>Name</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>${rows||'<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:28px">✅ No pending withdrawals</td></tr>'}</tbody>
+      </table></div>
+    </div>`;
+}
+async function approveW(id,username,net){
+    if(!confirm(`Approve €${net} withdrawal for ${username}?\nMake sure you have sent the bank transfer first!`))return;
+    const r=await api('POST','approve_withdrawal',{withdrawal_id:id});
+    if(r?.success){toast(r.message,'ok');withdrawals();}else{toast(r?.message,'error');}
+}
+function rejectW(id){
+    showModal(`
+    <div style="font-size:1.1rem;font-weight:700;margin-bottom:12px">❌ Reject Withdrawal #${id}</div>
+    <div class="fg"><label class="fl">Reason</label><input class="fi" id="rr" placeholder="e.g. Suspicious activity" value="Rejected by admin"></div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn berr" style="flex:1" onclick="doRejectW(${id})">Reject & Refund User</button>
+      <button class="btn bg_" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+async function doRejectW(id){
+    const reason=document.getElementById('rr')?.value||'Rejected by admin';
+    const r=await api('POST','reject_withdrawal',{withdrawal_id:id,reason});
+    closeModal();
+    if(r?.success){toast(r.message,'ok');withdrawals();}else{toast(r?.message,'error');}
+}
+
+// ── DEPOSITS ──────────────────────────────────────────────────
+async function deposits(){
+    const r=await api('GET','deposits');
+    if(!r?.success)return;
+    const rows=r.data.map(d=>`<tr>
+      <td>#${d.id}</td>
+      <td>${d.username}</td>
+      <td class="fw7">${parseFloat(d.trx_amount).toFixed(2)} TRX</td>
+      <td class="text-ok">€${parseFloat(d.eur_amount).toFixed(2)}</td>
+      <td style="font-family:monospace;font-size:.75rem">${d.memo}</td>
+      <td>${new Date(d.created_at).toLocaleString()}</td>
+      <td><button class="btn bok bsm" onclick="confirmDep(${d.id},'${d.username}',${d.eur_amount})">✅ Confirm</button></td>
+    </tr>`).join('');
+    document.getElementById('page').innerHTML=`
+    <div class="pg-title">Deposits</div>
+    <div class="pg-sub">Manually confirm TRX deposits after verifying on blockchain</div>
+    <div class="card mb16">
+      <div style="font-size:.84rem;color:var(--text2)">
+        💡 Check your TRX wallet on <a href="https://tronscan.org" target="_blank" style="color:var(--acc2)">tronscan.org</a> — 
+        match the <strong>memo</strong> to confirm the correct user's deposit.
+      </div>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>ID</th><th>User</th><th>TRX</th><th>EUR</th><th>Memo</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>${rows||'<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:28px">✅ No pending deposits</td></tr>'}</tbody>
+      </table></div>
+    </div>`;
+}
+async function confirmDep(id,username,eur){
+    if(!confirm(`Confirm €${eur} deposit for ${username}?\nOnly confirm after verifying on tronscan.org!`))return;
+    const r=await api('POST','confirm_deposit',{deposit_id:id});
+    if(r?.success){toast(r.message,'ok');deposits();}else{toast(r?.message,'error');}
+}
+
+// ── USERS ─────────────────────────────────────────────────────
+async function users(){
+    const r=await api('GET','users');
+    if(!r?.success)return;
+    const rows=r.data.map(u=>`<tr>
+      <td>#${u.id}</td>
+      <td>${u.username}${u.is_admin?'<span class="badge binfo" style="margin-left:5px">Admin</span>':''}</td>
+      <td class="text-muted">${u.email}</td>
+      <td><span class="vbadge v${u.vip_level}">VIP ${u.vip_level}</span></td>
+      <td class="text-ok">€${parseFloat(u.earnings_balance).toFixed(2)}</td>
+      <td class="text-acc">€${parseFloat(u.total_deposited).toFixed(2)}</td>
+      <td><span class="badge ${u.status==='active'?'bok2':'berr2'}">${u.status}</span></td>
+      <td>
+        <button class="btn bp bsm" onclick="setVipModal(${u.id},'${u.username}',${u.vip_level})">VIP</button>
+        <button class="btn bg_ bsm" onclick="toggleU(${u.id},'${u.username}')">${u.status==='active'?'🔒 Ban':'✅ Unban'}</button>
+      </td></tr>`).join('');
+    document.getElementById('page').innerHTML=`
+    <div class="pg-title">Users</div>
+    <div class="pg-sub">Manage users, VIP levels and account status</div>
+    <div class="card">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>VIP</th><th>Earnings</th><th>Deposited</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>`;
+}
+function setVipModal(uid,username,current){
+    showModal(`
+    <div style="font-size:1.1rem;font-weight:700;margin-bottom:12px">⚡ Set VIP — ${username}</div>
+    <div class="fg"><label class="fl">VIP Level (1–7)</label>
+      <select class="fi" id="vl">
+        ${[1,2,3,4,5,6,7].map(l=>`<option value="${l}" ${l===current?'selected':''}>${l} — ${['','Starter','Growing','Rising','Strong','Premium','Elite','VIP Elite'][l]}</option>`).join('')}
+      </select></div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn bp" style="flex:1" onclick="doSetVip(${uid})">✅ Set VIP</button>
+      <button class="btn bg_" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+async function doSetVip(uid){
+    const level=parseInt(document.getElementById('vl')?.value);
+    const r=await api('POST','set_vip',{user_id:uid,vip_level:level});
+    closeModal();
+    if(r?.success){toast(r.message,'ok');users();}else{toast(r?.message,'error');}
+}
+async function toggleU(uid,username){
+    if(!confirm(`Toggle status for ${username}?`))return;
+    const r=await api('POST','toggle_user',{user_id:uid});
+    if(r?.success){toast(`${username}: ${r.data.status}`,'ok');users();}else{toast(r?.message,'error');}
+}
+
+// ── VIDEOS ────────────────────────────────────────────────────
+async function videos(){
+    const r=await api('GET','videos');
+    if(!r?.success)return;
+    const rows=r.data.map(v=>`<tr>
+      <td>#${v.id}</td>
+      <td>${v.title}</td>
+      <td><a href="https://youtu.be/${v.ext_id}" target="_blank" style="color:var(--acc2)">${v.ext_id}</a></td>
+      <td>${v.duration_s}s</td>
+      <td><span class="badge ${v.status==='active'?'bok2':'berr2'}">${v.status}</span></td>
+      <td><button class="btn berr bsm" onclick="delVideo(${v.id},'${v.title}')">🗑 Remove</button></td>
+    </tr>`).join('');
+    document.getElementById('page').innerHTML=`
+    <div class="pg-title">Videos</div>
+    <div class="pg-sub">Add or remove YouTube videos from the earning pool</div>
+    <div class="card mb16">
+      <div class="sec-title">➕ Add New Video</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:10px;align-items:end">
+        <div><label class="fl">Title</label><input class="fi" id="vt" placeholder="Video title"></div>
+        <div><label class="fl">YouTube ID (from URL)</label><input class="fi" id="ve" placeholder="e.g. dQw4w9WgXcQ"></div>
+        <div><label class="fl">Duration (sec)</label><input class="fi" id="vd" type="number" value="60" style="width:90px"></div>
+        <button class="btn bp" style="height:38px;margin-top:auto" onclick="addVid()">➕ Add</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>ID</th><th>Title</th><th>YouTube ID</th><th>Duration</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>`;
+}
+async function addVid(){
+    const title=document.getElementById('vt')?.value.trim();
+    const ext_id=document.getElementById('ve')?.value.trim();
+    const duration_s=parseInt(document.getElementById('vd')?.value||60);
+    if(!title||!ext_id){toast('Title and YouTube ID required','warn');return;}
+    const r=await api('POST','add_video',{title,ext_id,duration_s});
+    if(r?.success){toast('Video added!','ok');videos();}else{toast(r?.message,'error');}
+}
+async function delVideo(id,title){
+    if(!confirm(`Remove "${title}"?`))return;
+    const r=await api('POST','delete_video',{video_id:id});
+    if(r?.success){toast('Video removed','ok');videos();}else{toast(r?.message,'error');}
+}
+
+// ── REF CODES ─────────────────────────────────────────────────
+async function refcodes(){
+    document.getElementById('page').innerHTML=`
+    <div class="pg-title">Referral Codes</div>
+    <div class="pg-sub">Generate seed codes for new users who don't have a referral</div>
+    <div class="card" style="max-width:480px">
+      <div class="sec-title">🔑 Generate Codes</div>
+      <div class="fg"><label class="fl">How many codes?</label>
+        <input class="fi" id="cc" type="number" value="5" min="1" max="50">
+      </div>
+      <button class="btn bp" onclick="doGenCodes()">Generate Codes</button>
+      <div id="codes-result" style="margin-top:16px"></div>
+    </div>`;
+}
+async function doGenCodes(){
+    const count=parseInt(document.getElementById('cc')?.value||5);
+    const r=await api('POST','gen_codes',{count});
+    if(!r?.success){toast(r?.message,'error');return;}
+    document.getElementById('codes-result').innerHTML=`
+    <div style="background:var(--bg3);border-radius:10px;padding:14px">
+      <div style="font-size:.78rem;color:var(--text3);margin-bottom:8px">✅ ${r.data.codes.length} codes generated — share these with new users:</div>
+      ${r.data.codes.map(c=>`<div style="font-family:monospace;font-size:.9rem;color:var(--acc2);padding:4px 0;cursor:pointer" onclick="navigator.clipboard.writeText('${c}');toast('Copied!','ok')">${c} 📋</div>`).join('')}
+    </div>`;
+}
+
+// Boot
+window.addEventListener('DOMContentLoaded',()=>{ TOKEN ? buildApp() : showLogin(); });
+</script>
+</body>
+</html>

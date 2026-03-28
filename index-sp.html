@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwipeTRX Rewards — Watch. Earn. Grow.</title>
+  <meta name="description" content="Watch short videos and earn real EUR. Deposit with TRX crypto. Up to 49 videos/day.">
+  <meta name="theme-color" content="#0d0f1a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+/* ═══════════════════════════════════════════
+   SwipeTRX Rewards — Complete UI Stylesheet
+═══════════════════════════════════════════ */
+:root{
+  --bg:#0d0f1a;--bg2:#131626;--bg3:#1a1d30;--bg4:#0a0c16;
+  --glass:rgba(255,255,255,0.05);--glass-b:rgba(255,255,255,0.08);
+  --acc1:#6c5ce7;--acc2:#00cec9;--acc3:#fd79a8;--gold:#f9ca24;
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
+  --ok:#00b894;--err:#e17055;--warn:#fdcb6e;
+  --r:14px;--r2:10px;--t:.25s ease;
+  --sidebar:240px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;border:none;outline:none;font-family:inherit}
+input,select,textarea{font-family:inherit;outline:none;border:none;background:none}
+
+/* ── LAYOUT ────────────────────────────────── */
+.app{display:flex;min-height:100vh;position:relative;z-index:1}
+.sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--glass-b);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform var(--t)}
+.main-wrap{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--glass-b);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.page-body{padding:32px 28px;flex:1}
+
+/* ── SIDEBAR ───────────────────────────────── */
+.sb-logo{padding:22px 18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--glass-b)}
+.sb-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--acc1),var(--acc2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
+.sb-logo-text{font-weight:800;font-size:.95rem;background:linear-gradient(135deg,var(--acc1),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sb-nav{padding:14px 10px;flex:1;overflow-y:auto}
+.nav-section{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:10px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r2);color:var(--text2);font-size:.87rem;font-weight:500;transition:all var(--t);cursor:pointer;margin-bottom:2px;border:1px solid transparent}
+.nav-item:hover{background:var(--glass);color:var(--text)}
+.nav-item.active{background:linear-gradient(135deg,rgba(108,92,231,.18),rgba(0,206,201,.1));color:var(--acc2);border-color:rgba(108,92,231,.2)}
+.nav-icon{width:22px;text-align:center;font-size:1rem;flex-shrink:0}
+.sb-footer{padding:14px 10px;border-top:1px solid var(--glass-b)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r2);background:var(--glass)}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--acc1),var(--acc3));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0;text-transform:uppercase}
+
+/* ── COMPONENTS ────────────────────────────── */
+.card{background:var(--bg2);border:1px solid var(--glass-b);border-radius:var(--r);padding:24px}
+.card-sm{padding:16px}
+.glass-card{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-b);border-radius:var(--r);padding:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--glass-b);border-radius:var(--r);padding:22px;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;border-radius:50%;opacity:.07}
+.sc1::after{background:var(--acc1)} .sc2::after{background:var(--acc2)} .sc3::after{background:var(--acc3)} .sc4::after{background:var(--gold)}
+.stat-ico{font-size:1.5rem;margin-bottom:8px}
+.stat-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px}
+.stat-val{font-size:1.85rem;font-weight:800;line-height:1.1;background:linear-gradient(135deg,var(--text),var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-sub{font-size:.76rem;color:var(--text3);margin-top:5px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.sec-title{font-size:.95rem;font-weight:700;margin-bottom:14px}
+.page-title{font-size:1.5rem;font-weight:800;margin-bottom:3px}
+.page-sub{color:var(--text2);font-size:.87rem;margin-bottom:24px}
+
+/* ── BUTTONS ───────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 22px;border-radius:var(--r2);font-weight:600;font-size:.88rem;transition:all var(--t);cursor:pointer;white-space:nowrap}
+.btn-p{background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;border:none}
+.btn-p:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(108,92,231,.35)}
+.btn-g{background:var(--glass);border:1px solid var(--glass-b);color:var(--text2)}
+.btn-g:hover{background:var(--glass-b);color:var(--text)}
+.btn-ok{background:var(--ok);color:#fff;border:none}
+.btn-err{background:var(--err);color:#fff;border:none}
+.btn-full{width:100%}
+.btn-sm{padding:7px 14px;font-size:.8rem}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+
+/* ── FORMS ─────────────────────────────────── */
+.fg{margin-bottom:16px}
+.fl{display:block;font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:5px}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--glass-b);border-radius:var(--r2);padding:11px 15px;color:var(--text);font-size:.9rem;transition:border-color var(--t)}
+.fi:focus{border-color:var(--acc1)}
+.fi::placeholder{color:var(--text3)}
+
+/* ── VIP BADGES ────────────────────────────── */
+.vbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.v1{background:rgba(100,116,139,.2);color:#94a3b8}
+.v2{background:rgba(0,184,148,.15);color:#00b894}
+.v3{background:rgba(0,206,201,.15);color:#00cec9}
+.v4{background:rgba(108,92,231,.15);color:#a29bfe}
+.v5{background:rgba(253,121,168,.15);color:#fd79a8}
+.v6{background:rgba(253,203,110,.15);color:#fdcb6e}
+.v7{background:linear-gradient(135deg,rgba(249,202,36,.2),rgba(253,121,168,.2));color:#f9ca24;border:1px solid rgba(249,202,36,.3)}
+
+/* ── TABLES ────────────────────────────────── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);padding:10px 14px;border-bottom:1px solid var(--glass-b)}
+td{padding:12px 14px;font-size:.86rem;border-bottom:1px solid rgba(255,255,255,.028);color:var(--text2)}
+tr:hover td{background:var(--glass)}
+.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600}
+.b-ok{background:rgba(0,184,148,.15);color:#00b894}
+.b-warn{background:rgba(253,203,110,.15);color:#fdcb6e}
+.b-err{background:rgba(225,112,85,.15);color:#e17055}
+.b-info{background:rgba(108,92,231,.15);color:#a29bfe}
+
+/* ── PROGRESS BAR ──────────────────────────── */
+.pbar{height:6px;background:var(--glass-b);border-radius:3px;overflow:hidden;margin:8px 0}
+.pfill{height:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));border-radius:3px;transition:width .6s ease}
+
+/* ── VIDEO ─────────────────────────────────── */
+.video-box{background:#000;border-radius:var(--r);overflow:hidden;position:relative;aspect-ratio:16/9;width:100%;max-width:700px;margin:0 auto}
+.video-box iframe{width:100%;height:100%;border:0}
+.video-placeholder{display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;color:var(--text3)}
+.earn-pill{background:linear-gradient(135deg,rgba(108,92,231,.2),rgba(0,206,201,.12));border:1px solid rgba(0,206,201,.25);border-radius:20px;padding:6px 16px;font-size:.85rem;font-weight:600;color:var(--acc2)}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;max-width:700px;margin:20px auto 0}
+.vthumb{background:var(--bg3);border-radius:var(--r2);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all var(--t)}
+.vthumb:hover{transform:translateY(-2px);border-color:var(--acc1)}
+.vthumb.active{border-color:var(--acc2)}
+.vthumb img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.vthumb-info{padding:7px 10px;font-size:.76rem;color:var(--text2)}
+
+/* ── TRX BOX ───────────────────────────────── */
+.trx-box{background:linear-gradient(135deg,rgba(108,92,231,.1),rgba(0,206,201,.07));border:1px solid rgba(0,206,201,.18);border-radius:var(--r);padding:22px}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.83rem;word-break:break-all;color:var(--acc2);letter-spacing:.02em;background:var(--bg3);border:1px solid var(--glass-b);border-radius:var(--r2);padding:13px 15px;cursor:pointer;transition:background var(--t)}
+.mono:hover{background:var(--glass)}
+
+/* ── AUTH ──────────────────────────────────── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden}
+.auth-card{background:var(--bg2);border:1px solid var(--glass-b);border-radius:20px;padding:40px;width:100%;max-width:420px;position:relative;z-index:2;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.auth-brand{text-align:center;margin-bottom:26px}
+.auth-brand .name{font-size:1.65rem;font-weight:800;background:linear-gradient(135deg,var(--acc1),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-brand .tag{color:var(--text3);font-size:.8rem;margin-top:3px}
+.auth-toggle{text-align:center;margin-top:18px;font-size:.85rem;color:var(--text2)}
+.auth-toggle a{color:var(--acc2);font-weight:600;cursor:pointer}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text3);font-size:.75rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--glass-b)}
+
+/* ── TOASTS ────────────────────────────────── */
+#toasts{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--bg2);border:1px solid var(--glass-b);border-radius:12px;padding:13px 18px;font-size:.87rem;display:flex;align-items:center;gap:10px;min-width:270px;pointer-events:all;animation:tin .3s ease;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.toast.ok{border-left:3px solid var(--ok)}.toast.error{border-left:3px solid var(--err)}.toast.info{border-left:3px solid var(--acc1)}.toast.warn{border-left:3px solid var(--warn)}
+@keyframes tin{from{transform:translateX(60px);opacity:0}to{transform:none;opacity:1}}
+
+/* ── MISC ──────────────────────────────────── */
+.spin{width:36px;height:36px;border:3px solid var(--glass-b);border-top-color:var(--acc1);border-radius:50%;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.center-load{display:flex;align-items:center;justify-content:center;padding:60px}
+.blob-bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.blob{position:absolute;border-radius:50%;filter:blur(100px);animation:fb 14s ease-in-out infinite}
+@keyframes fb{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-50px) scale(1.12)}}
+.alert-warn{background:rgba(253,203,110,.07);border:1px solid rgba(253,203,110,.2);border-radius:10px;padding:12px 16px;font-size:.84rem;color:var(--warn)}
+.alert-info{background:rgba(0,206,201,.07);border:1px solid rgba(0,206,201,.15);border-radius:10px;padding:12px 16px;font-size:.84rem;color:var(--acc2)}
+.mb16{margin-bottom:16px} .mb24{margin-bottom:24px} .mb8{margin-bottom:8px} .mt8{margin-top:8px} .mt16{margin-top:16px} .mt12{margin-top:12px}
+.text-ok{color:var(--ok)} .text-err{color:var(--err)} .text-acc{color:var(--acc2)} .text-muted{color:var(--text3)} .fw7{font-weight:700} .fw8{font-weight:800}
+
+/* ── MOBILE ────────────────────────────────── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:190}
+.overlay.show{display:block}
+.hamburger{display:none;background:var(--glass);border:1px solid var(--glass-b);border-radius:8px;padding:8px 10px;color:var(--text);font-size:1.1rem}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)} .sidebar.open{transform:none} .main-wrap{margin-left:0} .hamburger{display:flex}
+  .g4{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:1fr 1fr} .page-body{padding:20px 14px}
+}
+@media(max-width:540px){.g4,.g3,.g2{grid-template-columns:1fr} .auth-card{padding:26px 18px}}
+  </style>
+</head>
+<body>
+<div id="root">
+  <div style="display:flex;align-items:center;justify-content:center;height:100vh">
+    <div style="text-align:center"><div style="font-size:2.5rem">⚡</div><div class="spin" style="margin:16px auto"></div></div>
+  </div>
+</div>
+<div id="toasts"></div>
+
+<script>
+// ╔══════════════════════════════════════════════════════════╗
+// ║   SwipeTRX Rewards — Complete Frontend SPA              ║
+// ║   Change API_BASE to your InfinityFree backend URL      ║
+// ╚══════════════════════════════════════════════════════════╝
+
+const API_BASE = 'https://YOUR-BACKEND.infinityfreeapp.com/api'; // ← CHANGE THIS
+
+let TOKEN = localStorage.getItem('strx_tok');
+let ME    = JSON.parse(localStorage.getItem('strx_me') || 'null');
+
+// ── API helper ────────────────────────────────────────────────
+async function api(method, file, action, body=null, auth=true) {
+  const h = {'Content-Type':'application/json'};
+  if (auth && TOKEN) h['Authorization'] = `Bearer ${TOKEN}`;
+  try {
+    const r = await fetch(`${API_BASE}/${file}.php?action=${action}`, {
+      method, headers: h, body: body ? JSON.stringify(body) : null
+    });
+    const j = await r.json();
+    if (r.status === 401 && auth) { logout(); return null; }
+    return j;
+  } catch(e) { toast('Network error – check your connection','error'); return null; }
+}
+
+// ── Toast ─────────────────────────────────────────────────────
+function toast(msg, type='info', ms=3600) {
+  const ico = {ok:'✅',error:'❌',info:'ℹ️',warn:'⚠️'};
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${ico[type]||'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), ms);
+}
+
+// ── Router ────────────────────────────────────────────────────
+const PAGES = { dashboard, watch, wallet, deposit, withdraw, referrals, profile };
+function go(page) {
+  if (!TOKEN && !['login','register'].includes(page)) { showAuth('login'); return; }
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.p===page));
+  const h = {dashboard:'Dashboard',watch:'Watch & Earn',wallet:'Wallet',
+             deposit:'Deposit TRX',withdraw:'Withdraw',referrals:'Referrals',profile:'Profile'};
+  const ph = document.getElementById('page-heading');
+  if (ph) ph.textContent = h[page] || page;
+  const pc = document.getElementById('page-body');
+  if (pc) pc.innerHTML = '<div class="center-load"><div class="spin"></div></div>';
+  if (PAGES[page]) PAGES[page]();
+}
+
+// ── Auth ──────────────────────────────────────────────────────
+function logout() {
+  TOKEN = null; ME = null;
+  localStorage.removeItem('strx_tok'); localStorage.removeItem('strx_me');
+  showAuth('login');
+}
+function saveAuth(tok, user) {
+  TOKEN = tok; ME = user;
+  localStorage.setItem('strx_tok', tok);
+  localStorage.setItem('strx_me', JSON.stringify(user));
+}
+
+function showAuth(mode) {
+  document.getElementById('root').innerHTML = `
+    <div class="blob-bg">
+      <div class="blob" style="width:450px;height:450px;top:-100px;left:-80px;background:var(--acc1);opacity:.05;animation-delay:0s"></div>
+      <div class="blob" style="width:350px;height:350px;bottom:-80px;right:-60px;background:var(--acc2);opacity:.05;animation-delay:5s"></div>
+    </div>
+    <div class="auth-wrap">
+      <div class="auth-card" id="ac">
+        ${mode==='login' ? loginHTML() : regHTML()}
+      </div>
+    </div>`;
+}
+
+function loginHTML() {
+  return `
+    <div class="auth-brand"><div class="name">⚡ SwipeTRX Rewards</div><div class="tag">Watch · Earn · Grow with TRX</div></div>
+    <h2 style="font-size:1.25rem;margin-bottom:4px">Welcome back</h2>
+    <p style="color:var(--text3);font-size:.85rem;margin-bottom:22px">Sign in to your account</p>
+    <div class="fg"><label class="fl">Email</label><input class="fi" id="le" type="email" placeholder="you@example.com"></div>
+    <div class="fg"><label class="fl">Password</label><input class="fi" id="lp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn btn-p btn-full" onclick="doLogin()">Sign In →</button>
+    <div class="auth-toggle">No account? <a onclick="showAuth('register')">Register with referral code</a></div>`;
+}
+
+function regHTML() {
+  const preRef = sessionStorage.getItem('ref') || '';
+  return `
+    <div class="auth-brand"><div class="name">⚡ SwipeTRX Rewards</div><div class="tag">Join the earning community</div></div>
+    <h2 style="font-size:1.25rem;margin-bottom:4px">Create account</h2>
+    <p style="color:var(--text3);font-size:.85rem;margin-bottom:22px">You need a referral code to join</p>
+    <div class="fg"><label class="fl">Username</label><input class="fi" id="ru" type="text" placeholder="cooluser123" maxlength="50"></div>
+    <div class="fg"><label class="fl">Email</label><input class="fi" id="re" type="email" placeholder="you@example.com"></div>
+    <div class="fg"><label class="fl">Password <span style="color:var(--text3)">(min 8 chars)</span></label><input class="fi" id="rp" type="password" placeholder="Choose a strong password"></div>
+    <div class="fg"><label class="fl">Referral Code <span style="color:var(--err)">*</span></label><input class="fi" id="rc" type="text" placeholder="e.g. SWIPEABC1" value="${preRef}" style="text-transform:uppercase"></div>
+    <button class="btn btn-p btn-full" onclick="doRegister()">Create Account →</button>
+    <div class="auth-toggle">Already have an account? <a onclick="showAuth('login')">Sign in</a></div>`;
+}
+
+async function doLogin() {
+  const e=document.getElementById('le')?.value.trim();
+  const p=document.getElementById('lp')?.value;
+  if (!e||!p) { toast('Enter email and password','warn'); return; }
+  const r = await api('POST','auth','login',{email:e,password:p},false);
+  if (!r) return;
+  if (!r.success) { toast(r.message,'error'); return; }
+  saveAuth(r.data.token, r.data.user);
+  buildApp();
+}
+
+async function doRegister() {
+  const u=document.getElementById('ru')?.value.trim();
+  const e=document.getElementById('re')?.value.trim();
+  const p=document.getElementById('rp')?.value;
+  const c=document.getElementById('rc')?.value.trim().toUpperCase();
+  if (!u||!e||!p||!c) { toast('Fill all fields','warn'); return; }
+  const r = await api('POST','auth','register',{username:u,email:e,password:p,ref_code:c},false);
+  if (!r) return;
+  if (!r.success) { toast(r.message,'error'); return; }
+  toast('Account created! Please sign in.','ok',5000);
+  showAuth('login');
+}
+
+// ── App Shell ─────────────────────────────────────────────────
+function buildApp() {
+  document.getElementById('root').innerHTML = `
+    <div class="blob-bg">
+      <div class="blob" style="width:600px;height:600px;top:-150px;left:-100px;background:var(--acc1);opacity:.03"></div>
+      <div class="blob" style="width:400px;height:400px;bottom:-80px;right:-80px;background:var(--acc2);opacity:.03;animation-delay:6s"></div>
+    </div>
+    <div class="overlay" id="ov" onclick="closeSB()"></div>
+    <div class="app">
+      <aside class="sidebar" id="sb">
+        <div class="sb-logo">
+          <div class="sb-logo-icon">⚡</div>
+          <div><div class="sb-logo-text">SwipeTRX</div><div style="font-size:.65rem;color:var(--text3)">Rewards</div></div>
+        </div>
+        <nav class="sb-nav">
+          <div class="nav-section">Main</div>
+          ${ni('dashboard','📊','Dashboard')}
+          ${ni('watch','▶️','Watch & Earn')}
+          <div class="nav-section" style="margin-top:10px">Finance</div>
+          ${ni('wallet','💼','Wallet')}
+          ${ni('deposit','💎','Deposit TRX')}
+          ${ni('withdraw','💸','Withdraw')}
+          <div class="nav-section" style="margin-top:10px">Account</div>
+          ${ni('referrals','👥','Referrals')}
+          ${ni('profile','⚙️','Profile')}
+        </nav>
+        <div class="sb-footer">
+          <div class="sb-user">
+            <div class="avatar">${(ME?.username||'U')[0]}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ME?.username||'User'}</div>
+              <div class="vbadge v${ME?.vip_level||1}" style="margin-top:2px">VIP ${ME?.vip_level||1}</div>
+            </div>
+            <button onclick="logout()" title="Logout" style="background:none;color:var(--text3);font-size:1rem;padding:4px">🚪</button>
+          </div>
+        </div>
+      </aside>
+      <div class="main-wrap">
+        <header class="topbar">
+          <div style="display:flex;align-items:center;gap:14px">
+            <button class="hamburger" onclick="openSB()">☰</button>
+            <span id="page-heading" style="font-weight:700;font-size:1.05rem">Dashboard</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px">
+            <div style="text-align:right">
+              <div style="font-size:.68rem;color:var(--text3)">Total Balance</div>
+              <div id="tb" style="font-size:.95rem;font-weight:800;color:var(--acc2)">€0.00</div>
+            </div>
+          </div>
+        </header>
+        <div class="page-body" id="page-body"></div>
+      </div>
+    </div>`;
+  refreshBal();
+  go('dashboard');
+}
+
+function ni(p,ico,label) {
+  return `<div class="nav-item" data-p="${p}" onclick="go('${p}');closeSB()">${'<span class="nav-icon">'+ico+'</span><span>'+label+'</span>'}</div>`;
+}
+function openSB(){ document.getElementById('sb').classList.add('open'); document.getElementById('ov').classList.add('show'); }
+function closeSB(){ document.getElementById('sb')?.classList.remove('open'); document.getElementById('ov')?.classList.remove('show'); }
+async function refreshBal() {
+  const r = await api('GET','user','balance');
+  if (r?.success) document.getElementById('tb').textContent = `€${r.data.total.toFixed(2)}`;
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+async function dashboard() {
+  const r = await api('GET','user','profile');
+  if (!r?.success) { toast('Failed to load profile','error'); return; }
+  const u = r.data;
+  document.getElementById('page-body').innerHTML = `
+    <div class="page-title">Hey ${u.username}! 👋</div>
+    <div class="page-sub">Here's your SwipeTRX earnings overview</div>
+    <div class="g4 mb24">
+      ${sc('sc1','💰','Earnings Balance','€'+u.earnings.toFixed(2),'Ready to withdraw')}
+      ${sc('sc2','💎','Deposit Balance','€'+u.deposit.toFixed(2),'Total deposited')}
+      ${sc('sc3','▶️','Videos Today',''+u.videos_today+' / '+u.videos_per_day,'Daily limit')}
+      ${sc('sc4','👥','Referrals',''+u.ref_count,'People invited')}
+    </div>
+    <div class="g2 mb24">
+      <div class="card">
+        <div class="sec-title">⚡ VIP Status</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+          <div style="font-size:2.5rem">👑</div>
+          <div>
+            <div class="vbadge v${u.vip_level}" style="font-size:.78rem;padding:5px 12px">VIP ${u.vip_level} — ${u.vip_name}</div>
+            <div style="color:var(--text2);font-size:.82rem;margin-top:5px">${u.videos_per_day} videos/day · ${u.vip_mult}x multiplier</div>
+            <div style="color:var(--text3);font-size:.75rem;margin-top:2px">€${u.total_deposited} total deposited</div>
+          </div>
+        </div>
+        <div class="pbar"><div class="pfill" style="width:${Math.min(100,(u.videos_today/u.videos_per_day)*100)}%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--text3)">
+          <span>${u.videos_today} watched</span><span>${u.videos_remaining} left today</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title">🚀 Quick Actions</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="btn btn-p" onclick="go('watch')">▶️ Watch Videos & Earn Now</button>
+          <button class="btn btn-g" onclick="go('deposit')">💎 Deposit TRX</button>
+          ${u.has_deposited
+            ? `<button class="btn btn-ok" onclick="go('withdraw')">💸 Withdraw Earnings</button>`
+            : `<div class="alert-warn">⚠️ Deposit TRX once to unlock withdrawals</div>`}
+          <div style="background:var(--bg3);border-radius:10px;padding:11px;font-size:.82rem">
+            🔗 Your code: <span class="text-acc fw7" style="cursor:pointer" onclick="cpRef('${u.ref_code}')">${u.ref_code} 📋</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function sc(cls,ico,lbl,val,sub) {
+  return `<div class="stat-card ${cls}">
+    <div class="stat-ico">${ico}</div>
+    <div class="stat-lbl">${lbl}</div>
+    <div class="stat-val">${val}</div>
+    <div class="stat-sub">${sub}</div>
+  </div>`;
+}
+function cpRef(c) { navigator.clipboard.writeText(c); toast('Referral code copied!','ok'); }
+
+// ── WATCH & EARN ──────────────────────────────────────────────
+let wTimer=null, wSec=0, wVid=null;
+
+async function watch() {
+  const [vr,sr] = await Promise.all([api('GET','video','list'), api('GET','video','status')]);
+  if (!vr?.success) { toast('Failed to load videos','error'); return; }
+  const rem = sr?.data?.remaining ?? 0;
+  document.getElementById('page-body').innerHTML = `
+    <div class="page-title">Watch & Earn</div>
+    <div class="page-sub">${rem > 0 ? rem+' videos remaining today — €0.39 each (×VIP multiplier)' : '🎉 Daily limit reached! Come back tomorrow.'}</div>
+    <div class="video-box" id="vbox">
+      <div class="video-placeholder"><div style="font-size:3rem">▶️</div><div>Select a video below</div></div>
+    </div>
+    <div style="max-width:700px;margin:10px auto 0">
+      <div class="pbar"><div class="pfill" id="wprog" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;flex-wrap:wrap;gap:8px">
+        <div class="earn-pill" id="epill">Select a video to start earning</div>
+        <div id="wstat" style="font-size:.8rem;color:var(--text3)"></div>
+      </div>
+    </div>
+    <div class="vgrid" id="vgrid">
+      ${vr.data.map(v=>`
+        <div class="vthumb" id="vt${v.id}" onclick="pickVid(${v.id},'${v.ext_id}',${v.duration_s})">
+          <img src="${v.thumbnail||'https://img.youtube.com/vi/'+v.ext_id+'/mqdefault.jpg'}" alt="${v.title}" loading="lazy">
+          <div class="vthumb-info">${v.title} · ${v.duration_s}s</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function pickVid(id, extId, dur) {
+  if (wTimer) { clearInterval(wTimer); wTimer=null; }
+  wVid={id,dur}; wSec=0;
+  document.querySelectorAll('.vthumb').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`vt${id}`)?.classList.add('active');
+  document.getElementById('vbox').innerHTML = `<iframe src="https://www.youtube.com/embed/${extId}?autoplay=1&rel=0&modestbranding=1" allow="autoplay;encrypted-media" allowfullscreen></iframe>`;
+  document.getElementById('epill').textContent = `⏳ Watch ${dur}s to earn`;
+  document.getElementById('wprog').style.width='0%';
+  wTimer = setInterval(()=>{
+    wSec++;
+    document.getElementById('wprog').style.width = Math.min(100,(wSec/dur)*100)+'%';
+    document.getElementById('wstat').textContent = `${wSec}s / ${dur}s`;
+    if(wSec>=dur){ clearInterval(wTimer); wTimer=null; creditWatch(id); }
+  },1000);
+}
+
+async function creditWatch(vid) {
+  document.getElementById('epill').textContent='⏳ Crediting...';
+  const r = await api('POST','video','watch',{video_id:vid});
+  if (!r) return;
+  if (!r.success) { toast(r.message,'error'); document.getElementById('epill').textContent=r.message; return; }
+  toast(`🎉 Earned €${r.data.earned_eur}! (${r.data.remaining} left today)`,'ok',4500);
+  document.getElementById('epill').textContent=`✅ Earned €${r.data.earned_eur}!`;
+  document.getElementById(`vt${vid}`)?.remove();
+  refreshBal();
+}
+
+// ── WALLET ────────────────────────────────────────────────────
+async function wallet() {
+  const [br,tr] = await Promise.all([api('GET','user','balance'), api('GET','user','transactions')]);
+  const b = br?.data||{};
+  document.getElementById('page-body').innerHTML = `
+    <div class="page-title">Wallet</div>
+    <div class="page-sub">Your balances and transaction history</div>
+    <div class="g3 mb24">
+      ${sc('sc1','💰','Earnings Balance','€'+(b.earnings||0).toFixed(2),'From videos & referrals')}
+      ${sc('sc2','💎','Deposit Balance','€'+(b.deposit||0).toFixed(2),'Total TRX deposited')}
+      ${sc('sc4','💵','Total Balance','€'+(b.total||0).toFixed(2),'Combined')}
+    </div>
+    <div class="card">
+      <div class="sec-title">Recent Transactions</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Type</th><th>Amount</th><th>After</th><th>Note</th><th>Date</th></tr></thead>
+        <tbody>${txRows(tr?.data?.items||[])}</tbody>
+      </table></div>
+    </div>`;
+}
+
+function txRows(txns) {
+  if (!txns.length) return '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:28px">No transactions yet</td></tr>';
+  return txns.map(t=>{
+    const pos=t.amount_eur>=0;
+    return `<tr><td><span class="badge ${pos?'b-ok':'b-err'}">${t.type.replace('_',' ')}</span></td>
+      <td style="color:${pos?'var(--ok)':'var(--err)'};font-weight:600">${pos?'+':''}€${Math.abs(t.amount_eur).toFixed(2)}</td>
+      <td>€${parseFloat(t.balance_after).toFixed(2)}</td>
+      <td class="text-muted">${t.note||'—'}</td>
+      <td class="text-muted">${new Date(t.created_at).toLocaleDateString()}</td></tr>`;
+  }).join('');
+}
+
+// ── DEPOSIT ───────────────────────────────────────────────────
+async function deposit() {
+  const hr = await api('GET','deposit','history');
+  document.getElementById('page-body').innerHTML = `
+    <div class="page-title">Deposit with TRX</div>
+    <div class="page-sub">Fund your account on the TRON blockchain — auto-credited in ~2 minutes</div>
+    <div class="g2 mb24">
+      <div class="trx-box">
+        <div class="sec-title">💎 Generate Payment</div>
+        <div class="fg"><label class="fl">Amount (EUR)</label><input class="fi" id="da" type="number" min="5" step="1" placeholder="e.g. 50"></div>
+        <button class="btn btn-p btn-full" onclick="genDep()">Get TRX Payment Details</button>
+        <div id="dres"></div>
+      </div>
+      <div class="card">
+        <div class="sec-title">ℹ️ How deposits work</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:.84rem;color:var(--text2)">
+          <div>1️⃣ Enter EUR amount → get TRX equivalent</div>
+          <div>2️⃣ Open TronLink / TrustWallet / Binance</div>
+          <div>3️⃣ Send exact TRX to the shown address</div>
+          <div>4️⃣ <strong style="color:var(--acc3)">Include the memo</strong> in transfer!</div>
+          <div>5️⃣ Wait ~2 min → EUR credited automatically</div>
+          <div class="alert-warn mt8">⚠️ Always include memo. Deposits without memo cannot be matched to your account.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Deposit History</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>TRX</th><th>EUR</th><th>Rate</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>${depRows(hr?.data||[])}</tbody>
+      </table></div>
+    </div>`;
+}
+
+async function genDep() {
+  const eur = parseFloat(document.getElementById('da')?.value||0);
+  if (!eur||eur<5) { toast('Minimum €5','warn'); return; }
+  const r = await api('POST','deposit','create',{amount_eur:eur});
+  if (!r?.success) { toast(r?.message||'Error','error'); return; }
+  const d=r.data;
+  document.getElementById('dres').innerHTML=`
+    <div style="background:var(--bg3);border-radius:12px;padding:18px;margin-top:16px">
+      <div style="font-size:.75rem;color:var(--text3);margin-bottom:4px">Send exactly:</div>
+      <div style="font-size:1.7rem;font-weight:800;color:var(--acc2);margin-bottom:12px">${d.amount_trx} TRX</div>
+      <div style="font-size:.75rem;color:var(--text3);margin-bottom:5px">To this TRON address (click to copy):</div>
+      <div class="mono" onclick="cp('${d.address}','Address copied!')">${d.address}</div>
+      <div style="margin-top:12px;background:rgba(253,121,168,.08);border:1px solid rgba(253,121,168,.2);border-radius:8px;padding:11px">
+        <div style="font-size:.75rem;color:var(--text3)">Memo / Tag (REQUIRED):</div>
+        <div style="font-size:1rem;font-weight:800;color:var(--acc3);font-family:'JetBrains Mono',monospace;cursor:pointer;margin-top:2px" onclick="cp('${d.memo}','Memo copied!')">${d.memo} 📋</div>
+      </div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:8px">Rate: 1 TRX = €${d.rate} · Expires in ${d.expires_min} min</div>
+    </div>`;
+}
+
+function depRows(deps) {
+  if (!deps.length) return '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:28px">No deposits yet</td></tr>';
+  return deps.map(d=>`<tr>
+    <td class="fw7">${parseFloat(d.trx_amount).toFixed(2)} TRX</td>
+    <td class="text-ok">+€${parseFloat(d.eur_credited).toFixed(2)}</td>
+    <td class="text-muted">€${parseFloat(d.trx_eur_rate).toFixed(4)}</td>
+    <td><span class="badge ${d.status==='confirmed'?'b-ok':d.status==='failed'?'b-err':'b-warn'}">${d.status}</span></td>
+    <td class="text-muted">${new Date(d.created_at).toLocaleDateString()}</td></tr>`).join('');
+}
+
+// ── WITHDRAW ──────────────────────────────────────────────────
+async function withdraw() {
+  const [br,hr] = await Promise.all([api('GET','user','balance'), api('GET','withdraw','history')]);
+  const b=br?.data||{};
+  document.getElementById('page-body').innerHTML = `
+    <div class="page-title">Withdraw Earnings</div>
+    <div class="page-sub">Min €50 · 2% fee · 1–3 business days · requires TRX deposit</div>
+    ${!b.can_withdraw?`<div class="alert-warn mb16">⚠️ You must make at least one TRX deposit before withdrawing.</div>`:''}
+    <div class="g2 mb24">
+      <div class="card">
+        <div class="sec-title">💸 Request Withdrawal</div>
+        <div style="background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:16px;font-size:.85rem">
+          Available: <span class="text-ok fw7">€${(b.earnings||0).toFixed(2)}</span>
+        </div>
+        <div class="fg"><label class="fl">Amount (EUR)</label><input class="fi" id="wa" type="number" min="50" placeholder="Min €50"></div>
+        <div class="fg"><label class="fl">Account Name</label><input class="fi" id="wn" type="text" placeholder="Your full name"></div>
+        <div class="fg"><label class="fl">IBAN</label><input class="fi" id="wi" type="text" placeholder="BG80BNBG96611020345678"></div>
+        <button class="btn btn-ok btn-full" ${!b.can_withdraw?'disabled':''} onclick="doWithdraw()">Submit Withdrawal</button>
+      </div>
+      <div class="card">
+        <div class="sec-title">ℹ️ Withdrawal Info</div>
+        <div style="font-size:.85rem;color:var(--text2);display:flex;flex-direction:column;gap:10px">
+          <div>✅ Minimum: <strong>€50</strong></div>
+          <div>💸 Platform fee: <strong>2%</strong></div>
+          <div>⏳ Processing: <strong>1–3 business days</strong></div>
+          <div>🏦 Payment via: <strong>Bank transfer (IBAN)</strong></div>
+          <div>🔒 Requires: <strong>At least 1 TRX deposit</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Withdrawal History</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Amount</th><th>Fee</th><th>Net</th><th>IBAN</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>${wdRows(hr?.data||[])}</tbody>
+      </table></div>
+    </div>`;
+}
+
+async function doWithdraw() {
+  const amount_eur=parseFloat(document.getElementById('wa')?.value||0);
+  const account_name=document.getElementById('wn')?.value.trim();
+  const iban=document.getElementById('wi')?.value.trim();
+  if (!amount_eur||!iban) { toast('Fill all required fields','warn'); return; }
+  const r = await api('POST','withdraw','request',{amount_eur,account_name,iban});
+  if (!r?.success) { toast(r?.message||'Error','error'); return; }
+  toast(`Withdrawal €${r.data.net_eur} submitted! ETA: ${r.data.eta}`,'ok',5000);
+  refreshBal(); withdraw();
+}
+
+function wdRows(wds) {
+  if (!wds.length) return '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:28px">No withdrawals yet</td></tr>';
+  return wds.map(w=>`<tr>
+    <td>€${parseFloat(w.amount_eur).toFixed(2)}</td>
+    <td class="text-err">-€${parseFloat(w.fee_eur).toFixed(2)}</td>
+    <td class="text-ok fw7">€${parseFloat(w.net_eur).toFixed(2)}</td>
+    <td class="text-muted" style="font-family:monospace;font-size:.78rem">${w.iban?.slice(0,12)+'...'||'—'}</td>
+    <td><span class="badge ${w.status==='completed'?'b-ok':w.status==='failed'?'b-err':'b-warn'}">${w.status}</span></td>
+    <td class="text-muted">${new Date(w.created_at).toLocaleDateString()}</td></tr>`).join('');
+}
+
+// ── REFERRALS ─────────────────────────────────────────────────
+async function referrals() {
+  const r = await api('GET','user','profile');
+  if (!r?.success) return;
+  const u=r.data;
+  document.getElementById('page-body').innerHTML = `
+    <div class="page-title">Referral Program</div>
+    <div class="page-sub">Earn 10% of your referrals' video earnings + €0.50 per signup</div>
+    <div class="g3 mb24">
+      ${sc('sc1','👥','Total Referrals',''+u.ref_count,'People you invited')}
+      ${sc('sc2','💰','Signup Bonuses','€'+(0.5*u.ref_count).toFixed(2),'€0.50 per signup')}
+      ${sc('sc3','🔗','Your Code',u.ref_code,'Share this code')}
+    </div>
+    <div class="card mb16">
+      <div class="sec-title">🔗 Your Referral Link</div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div class="mono" style="flex:1" onclick="cp('${location.origin}/?ref=${u.ref_code}','Link copied!')">${location.origin}/?ref=${u.ref_code}</div>
+        <button class="btn btn-p btn-sm" onclick="cp('${location.origin}/?ref=${u.ref_code}','Link copied!')">📋 Copy Link</button>
+      </div>
+    </div>
+    <div class="alert-info">
+      💡 When someone registers with your code, you instantly earn <strong>€0.50</strong> signup bonus and <strong>10%</strong> of all their video earnings forever — completely passive income!
+    </div>`;
+}
+
+// ── PROFILE ───────────────────────────────────────────────────
+async function profile() {
+  const r = await api('GET','user','profile');
+  if (!r?.success) return;
+  const u=r.data;
+  const vips=[[1,'Starter','7/day','1.0x','Free'],[2,'Growing','14/day','1.2x','€150'],[3,'Rising','21/day','1.4x','€300'],[4,'Strong','28/day','1.6x','€500'],[5,'Premium','35/day','1.8x','€800'],[6,'Elite','42/day','2.0x','€1,200'],[7,'VIP Elite','49/day','2.2x','€2,000']];
+  document.getElementById('page-body').innerHTML = `
+    <div class="page-title">Profile</div>
+    <div class="page-sub">Account details and VIP tier overview</div>
+    <div class="g2">
+      <div class="card">
+        <div style="text-align:center;margin-bottom:20px">
+          <div class="avatar" style="width:68px;height:68px;font-size:1.8rem;margin:0 auto 12px">${u.username[0]}</div>
+          <div style="font-size:1.1rem;font-weight:800">${u.username}</div>
+          <div class="text-muted" style="font-size:.83rem;margin-top:2px">${u.email}</div>
+          <div class="vbadge v${u.vip_level}" style="margin-top:8px;font-size:.78rem">${u.vip_name}</div>
+        </div>
+        ${prow('Member since',new Date(u.member_since).toLocaleDateString())}
+        ${prow('Total videos watched',`<span class="text-acc">${u.total_watched}</span>`)}
+        ${prow('Total deposited',`<span class="text-ok">€${u.total_deposited}</span>`)}
+        ${prow('Total earnings','€'+u.earnings.toFixed(2))}
+        ${prow('Referral code',`<span class="text-acc fw7" style="cursor:pointer" onclick="cpRef('${u.ref_code}')">${u.ref_code} 📋</span>`)}
+        <div style="margin-top:16px"><button class="btn btn-err btn-sm" onclick="if(confirm('Log out?'))logout()">🚪 Logout</button></div>
+      </div>
+      <div class="card">
+        <div class="sec-title">VIP Tier Benefits</div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          ${vips.map(([l,n,v,m,d])=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:${l===u.vip_level?'rgba(108,92,231,.12)':'var(--bg3)'};">
+              <span class="vbadge v${l}">VIP ${l}</span>
+              <span style="flex:1;font-size:.82rem;color:var(--text2)">${n}</span>
+              <span style="font-size:.78rem;color:var(--text3)">${v}</span>
+              <span style="font-size:.78rem;color:var(--acc2)">${m}</span>
+              <span style="font-size:.75rem;color:var(--text3)">${d}+</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function prow(l,v) {
+  return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--glass-b);font-size:.85rem"><span class="text-muted">${l}</span><span>${v}</span></div>`;
+}
+
+// ── Utilities ─────────────────────────────────────────────────
+function cp(text, msg='Copied!') {
+  navigator.clipboard.writeText(text).then(()=>toast(msg,'ok'));
+}
+
+// ── Boot ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  const ref = new URLSearchParams(location.search).get('ref');
+  if (ref) sessionStorage.setItem('ref', ref);
+  if (TOKEN) buildApp();
+  else showAuth('login');
+});
+</script>
+</body>
+</html>
