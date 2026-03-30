@@ -1,0 +1,16 @@
+[build]
+  builder = "NIXPACKS"
+
+[[services]]
+  # Main App
+  [[services.ports]]
+    port = 80
+    forceHttps = true
+
+[[services.cron_deposits]]
+  command = "php deposit_checker.php"
+  cron = "*/5 * * * *"
+
+[[services.cron_videos]]
+  command = "php reset_videos.php" 
+  cron = "0 0 * * *"
