@@ -8,9 +8,9 @@
     forceHttps = true
 
 [[services.cron_deposits]]
-  command = "php deposit_checker.php"
+  command = "php cron_trx_checker.php"
   cron = "*/5 * * * *"
 
 [[services.cron_videos]]
-  command = "php reset_videos.php" 
+  command = "php cron_daily_reset.php" 
   cron = "0 0 * * *"
